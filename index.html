@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Quiz Game</h1>
+        <div id="question">Loading...</div>
+        <input type="text" id="answer" placeholder="Your answer">
+        <button onclick="submitAnswer()">Submit</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function loadQuestion() {
+            const res = await fetch('http://localhost:5000/question');
+            const data = await res.json();
+            document.getElementById("question").innerText = data.question;
+        }
+
+        async function submitAnswer() {
+            const answer = document.getElementById("answer").value;
+            const res = await fetch('http://localhost:5000/answer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ answer: answer })
+            });
+            const data = await res.json();
+            document.getElementById("result").innerText = data.result;
+            loadQuestion();
+            document.getElementById("answer").value = "";
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
